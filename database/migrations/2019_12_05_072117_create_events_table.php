@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTableEventsTable extends Migration
+class CreateEventsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTableEventsTable extends Migration
      */
     public function up()
     {
-        Schema::create('table_events', function (Blueprint $table) {
+        Schema::create('events', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('description')->nullable();
             $table->string('lat');
@@ -21,6 +21,7 @@ class CreateTableEventsTable extends Migration
             $table->dateTime('date_occure');
             $table->enum('repetition',['monthly','yearly']);
             $table->enum('remind_before',['week','day', 'month']);
+            $table->unsignedInteger('day_amount')->nullable();
             $table->timestamps();
 
             $table->unsignedInteger('user_id');

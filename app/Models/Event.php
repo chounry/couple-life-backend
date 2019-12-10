@@ -8,5 +8,6 @@ class Event extends Model
 {
     // public $timestamps = false;
     // protected $table = 'estates';
-    protected $fillable = [];
+    protected $fillable = ['title', 'description', 'date_occure','lat','lng','repetition','remind_before'];
+
 }
