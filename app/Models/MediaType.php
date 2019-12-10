@@ -8,5 +8,5 @@ class MediaType extends Model
 {
     // public $timestamps = false;
     // protected $table = 'estates';
-    protected $fillable = [];
+    protected $fillable = ['name'];
 }
