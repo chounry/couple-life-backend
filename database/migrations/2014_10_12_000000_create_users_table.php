@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->date('dob');
             $table->enum('gender',['male','female', 'other']);
             $table->string('email')->unique();
-            $table->string('progile_img');
+            $table->string('profile_img')->nullable();
             $table->string('cover_img')->nullable();
             $table->string('password');
             $table->timestamps();
