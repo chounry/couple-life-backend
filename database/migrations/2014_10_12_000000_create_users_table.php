@@ -23,9 +23,11 @@ class CreateUsersTable extends Migration
             $table->string('profile_img')->nullable();
             $table->string('cover_img')->nullable();
             $table->string('password');
+            $table->boolean('is_creator')->default(false);
             $table->timestamps();
 
             $table->unsignedInteger('user_type_id');
+            $table->unsignedInteger('partner_id');
         });
     }
 
