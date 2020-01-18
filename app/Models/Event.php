@@ -21,5 +21,4 @@ class Event extends Model
     public function eventType(){
         return $this->belongsTo('App\EventType');
     }
-
 }
