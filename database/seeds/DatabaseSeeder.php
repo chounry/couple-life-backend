@@ -55,41 +55,55 @@ class DatabaseSeeder extends Seeder
         // admin
         $d = strtotime('-11 Years');
         $dob = date('Y-m-d', $d);
+
+        $loginId = DB::table('logins')->insertGetId([
+            'email' => 'oun.chounry.dev@gmail.com',
+            'password' => bcrypt('123456'),
+        ]);
+
         DB::table('users')->insert([
             'user_type_id' => $adminId,
             'first_name' => 'Chounry',
             'last_name' => 'Oun',
             'dob' =>  $dob,
             'gender' => 'male',
-            'email' => 'oun.chounry.dev@gamil.com',
             'profile_img' => 'profile/user_default.png',
-            'password' => bcrypt('123456'),
+            'login_id' => $loginId
         ]);
+
+
+
 
         $d = strtotime('-10 Years');
         $dob = date('Y-m-d', $d);
+        $loginId = DB::table('logins')->insertGetId([
+            'email' => 'oun.chounry@gmail.com',
+            'password' => bcrypt('123456'),
+        ]);
         DB::table('users')->insert([
             'user_type_id' => $memberId,
             'first_name' => 'Jonh',
             'last_name' => 'Kenny',
             'dob' =>  $dob,
             'gender' => 'male',
-            'email' => 'oun.chounry.kh@gamil.com',
             'profile_img' => 'profile/user_default.png',
-            'password' => bcrypt('123456'),
+            'login_id' => $loginId
         ]);
 
         $d = strtotime('-12 Years');
         $dob = date('Y-m-d', $d);
+        $loginId = DB::table('logins')->insertGetId([
+            'email' => 'chounry@gmail.com',
+            'password' => bcrypt('123456'),
+        ]);
         DB::table('users')->insert([
             'user_type_id' => $memberId,
             'first_name' => 'Iha',
             'last_name' => 'Men',
             'dob' =>  $dob,
             'gender' => 'female',
-            'email' => 'oun.chounry@gamil.com',
             'profile_img' => 'profile/user_default.png',
-            'password' => bcrypt('123456'),
+            'login_id' => $loginId
         ]);
         //  create user ---------------------------->>
     }

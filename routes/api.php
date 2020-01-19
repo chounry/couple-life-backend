@@ -17,3 +17,5 @@ Route::middleware('auth:api')->group(function () {
     // routes that need authentication
     
 });
+
+Route::post('/user/register', 'PassportAuth\RegisterController@signUp');
