@@ -17,10 +17,10 @@ class EventController extends Controller {
             'a', 'b'
         ];
         $data = [
-            'code' => 200,
-            'm' => "ssd",
-            'data' => $datas
+            'title' => 'something',
+            'description' => 'des'
         ];
-        return response()->json($data,400);
+        // return response()->json($data,200);
+        return response()->json('msg',200);
     }
 }

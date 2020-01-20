@@ -19,15 +19,14 @@ class CreateUsersTable extends Migration
             $table->string('last_name');
             $table->date('dob');
             $table->enum('gender',['male','female', 'other']);
-            $table->string('email')->unique();
             $table->string('profile_img')->nullable();
             $table->string('cover_img')->nullable();
-            $table->string('password');
             $table->boolean('is_creator')->default(false);
             $table->timestamps();
 
             $table->unsignedInteger('user_type_id');
             $table->unsignedInteger('partner_id')->nullable(); // TODO : delete nullable
+            $table->unsignedInteger('login_id');
         });
     }
 

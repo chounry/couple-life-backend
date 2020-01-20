@@ -19,3 +19,4 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::post('/ok', 'EventController@Create');
+Route::post('/user/register', 'PassportAuth\RegisterController@signUp');
