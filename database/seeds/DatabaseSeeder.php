@@ -46,12 +46,21 @@ class DatabaseSeeder extends Seeder
         DB::table('chat_types')->insert([
             'name' => 'stiker'
         ]);
+
+        //event type
+        DB::table('event_types')->insert([
+            'name' => 'event'
+        ]);
+        DB::table('event_types')->insert([
+            'name' => 'memory'
+        ]);
         // all types ---------------------------->>
 
 
         // << --------------------------- create users
         $adminId = DB::table('user_types')->where('name','Admin')->first()->id;
         $memberId = DB::table('user_types')->where('name','Member')->first()->id;
+        
         // admin
         $d = strtotime('-11 Years');
         $dob = date('Y-m-d', $d);
@@ -70,9 +79,6 @@ class DatabaseSeeder extends Seeder
             'profile_img' => 'profile/user_default.png',
             'login_id' => $loginId
         ]);
-
-
-
 
         $d = strtotime('-10 Years');
         $dob = date('Y-m-d', $d);
