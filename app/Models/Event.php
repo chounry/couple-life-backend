@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
-    // public $timestamps = false;
+    public $timestamps = true;
     // protected $table = 'estates';
-    protected $fillable = ['title', 'description', 'date_occure','lat','lng','repetition','remind_before','day_amount','created_at','updated_at'];
+    protected $fillable = ['id', 'title', 'description', 'date_occure','lat','lng','repetition','remind_before','day_amount','created_at','updated_at'];
 
     public function medias(){
         return $this->hasMany('App\Models\Media','item_id');
