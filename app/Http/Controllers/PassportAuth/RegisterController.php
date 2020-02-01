@@ -14,7 +14,21 @@ use App\Models\Login;
 
 class RegisterController extends Controller
 {
-    //
+    /* 
+            ONE SIGNAL JSON STRUCTURE
+            
+            type : [ 'verify', 'chat' ]
+            {
+                'data' : {},
+                'type' : 'verify',
+                'msg' : '' 
+            }
+    */
+
+    public function login(Request $request){
+        
+    }
+
     public function signUp(Request $request){
         // checkEmailExist();
         // checkPassword();
@@ -47,8 +61,91 @@ class RegisterController extends Controller
         /* 
             - check his/her partner with verify number
             - push notification to his/her partner
-        */
 
+        */
+        
+        $selfLoginId = $request->login_id;
+        $partnerVerifyNumber = $request->verify_number;
+
+        $partnerLogin = Login::where('verify_number', $verifyNumber)->get()->first();
+        $selfLogin = Login::find($selfLoginId);
+
+        if($partnerLogin == null || $selfLogin == null){
+            return response()->json(['msg' => 'No user found']);
+        }
+
+        if($partnerLogin->partner_id != null){
+            return response()->json(['msg'=> 'Your partner already has another partner']);
+        }
+
+        if($selfLogin->partner_id != null){
+            return response()->json(['msg'=> 'You already has a partner']);
+        }
+
+        // this data will send back to the user
+        $dataSelf = [
+            'type' => 'verify',
+            'data' => [
+                'partner_id' => $partnerLogin->id
+            ],
+            'msg' => 'You have been connected'
+        ];
+
+        // this data will send to his/her partner with the id of the user that enter the verify number on the device
+        $dataPartner = [
+            'type' => 'verify',
+            'data' => [
+                'partner_id' => $selfLogin->id
+            ],
+            'msg' => 'You have been connected'
+        ];
+
+        $this->sendViaOneSignal($selfLogin->verifyNumber, $dataSelf = null, $msg = null);
+        $this->sendViaOneSignal($partnerLogin->verifyNumber, $dataPartner = null, $msg = null);
+
+        // $selfLogin->partner_id = $partnerLogin->id;
+        // $selfLogin->verifyNumber = null;
+        // $selfLogin->save();
+
+        // $partnerLogin->partner_id = $selfLogin->id;
+        // $partnerLogin->verifyNumber = null;
+        // $selfLogin->save();
+    }
+
+    public function confirm(Request $request){
+
+        $login = Login::find($request->id);
+        if($login == null){
+            return \response()->json(['msg' => "User doesn't exist"]);
+        }
+
+        $login->partner_id = $partnerLogin->id;
+        /* 
+            set the verify number to null in case
+            user delete the app after they have verify the account,
+            we can check : 
+                if the verifyNumber is null after they have login again at any other time so that
+                we can know that they have pass the verify partner account step.
+                Then we can set them to the setup info step directly
+
+         */
+        $login->verifyNumber = null;
+        $login->save();
+
+        return \response()->json('success', 200);
+
+    }
+
+    function sendViaOneSignal($tag, $dataToSend = null, $msg = null){
+    
+        OneSignal::sendNotificationUsingTags(
+            $msg,
+            array(["field"=>"tag","key" => "verify_number", "relation" => "=", "value" => $tag]),
+            $url = null,
+            $data = $dataToSend,
+            $buttons = null,
+            $schedule = null
+        );
     }
 
 

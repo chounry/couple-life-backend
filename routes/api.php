@@ -19,3 +19,5 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::post('/user/register', 'PassportAuth\RegisterController@signUp');
+Route::post('/user/verify_partner', 'PassportAuth\RegisterController@verifyNumber');
+Route::post('/user/confirm', 'PassportAuth\RegisterController@confirm');

@@ -25,7 +25,6 @@ class CreateUsersTable extends Migration
             $table->timestamps();
 
             $table->unsignedInteger('user_type_id');
-            $table->unsignedInteger('partner_id')->nullable(); // TODO : delete nullable
             $table->unsignedInteger('login_id');
         });
     }

@@ -19,6 +19,9 @@ class CreateLoginsTable extends Migration
             $table->string('password');
             $table->string('verify_number')->unique()->nullable();
             $table->timestamps();
+
+            $table->unsignedInteger('partner_id')->nullable(); // TODO : delete nullable
+
         });
     }
 
