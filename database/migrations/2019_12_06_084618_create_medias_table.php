@@ -16,6 +16,7 @@ class CreateMediasTable extends Migration
         Schema::create('medias', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('url');
+            $table->boolean('is_event')->default(true);
             $table->timestamps();
 
             $table->unsignedInteger('item_id');
