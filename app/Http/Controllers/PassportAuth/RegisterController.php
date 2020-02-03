@@ -5,6 +5,8 @@ namespace App\Http\Controllers\PassportAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Auth;
+
 use OneSignal;
 use Validator;
 use User;
@@ -26,7 +28,37 @@ class RegisterController extends Controller
     */
 
     public function login(Request $request){
-        
+        $validator = Validator::make($request->all(), [
+            'password' => 'min:6',
+        ]);
+
+        $response = []; // what will be response
+        $data = []; 
+
+        if($validator->fails()){
+            $response['errors'] = $validator->errors().'';
+            return response()->json($response, 200);
+        }
+
+        $users = Login::where("email", $request->email)->get();
+        if(count($users) < 1){
+            $response['errors'] = "{'email' : ''}";
+            return response()->json($response, 200);
+        }
+
+
+        if (auth()->attempt(['email' => $request->email, 'password' => $request->password])){ 
+            $user = Auth::user();
+            $token = $user->createToken('Myapp')->accessToken;
+            return [
+                'user_id'=>Auth::id(),
+                'verify_number' => Auth::user()->verify_number,
+                'token'=>$token
+            ];
+        } 
+        else {
+            return response()->json(['errors' => "{'password' : 'Wrong password'}"], 200);
+        } 
     }
 
     public function signUp(Request $request){
