@@ -22,3 +22,8 @@ Route::post('/user/login','PassportAuth\RegisterController@login');
 Route::post('/user/register', 'PassportAuth\RegisterController@signUp');
 Route::post('/user/verify_partner', 'PassportAuth\RegisterController@verifyNumber');
 Route::post('/user/confirm', 'PassportAuth\RegisterController@confirm');
+
+Route::post('/add_event', 'EventController@Create');
+Route::post('/update_event', 'EventController@Update');
+Route::post('/delete_event', 'EventController@Delete');
+Route::post('/read_event', 'EventController@Read');

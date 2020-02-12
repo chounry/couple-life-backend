@@ -97,7 +97,7 @@ class RegisterController extends Controller
         */
         
         $selfLoginId = $request->login_id;
-        $partnerVerifyNumber = $request->verify_number;
+        $partnerVerifyNumber = str_replace(" ","",$request->verify_number);
 
         $partnerLogin = Login::where('verify_number', $verifyNumber)->get()->first();
         $selfLogin = Login::find($selfLoginId);
@@ -135,13 +135,7 @@ class RegisterController extends Controller
         $this->sendViaOneSignal($selfLogin->verifyNumber, $dataSelf = null, $msg = null);
         $this->sendViaOneSignal($partnerLogin->verifyNumber, $dataPartner = null, $msg = null);
 
-        // $selfLogin->partner_id = $partnerLogin->id;
-        // $selfLogin->verifyNumber = null;
-        // $selfLogin->save();
-
-        // $partnerLogin->partner_id = $selfLogin->id;
-        // $partnerLogin->verifyNumber = null;
-        // $selfLogin->save();
+        return response()->json(['msg'=>'success']);
     }
 
     public function confirm(Request $request){
@@ -187,11 +181,16 @@ class RegisterController extends Controller
             - insert a new row to logins table with email, passwrod and verify number
         */
 
-        $randomNumber = mt_rand(000000, 999999).'';
+        $random = ''.mt_rand(000000, 999999);
+        $randomNumber = $random;
+
         $login = Login::where('verify_number', $randomNumber)->get()->first();
 
         while($login != null){
-            $randomNumber = mt_rand(000000, 999999).'';
+
+            $random = ''.mt_rand(000000, 999999);
+            $randomNumber = $random;
+
             $login = Login::where('verify_number', $randomNumber)->get()->first();
         }
 
