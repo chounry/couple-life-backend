@@ -16,6 +16,8 @@ use App\Models\Login;
 
 class RegisterController extends Controller
 {
+    private $VERIFY_PARTNER_TOKEN = "VERIFY_PARTNER_TOKEN";
+    private $INVITATION_TYPE = "invitation";
     /* 
             ONE SIGNAL JSON STRUCTURE
             
@@ -51,7 +53,7 @@ class RegisterController extends Controller
             $user = Auth::user();
             $token = $user->createToken('Myapp')->accessToken;
             return [
-                'user_id'=>Auth::id(),
+                'login_id'=>Auth::id(),
                 'verify_number' => Auth::user()->verify_number,
                 'token'=>$token
             ];
@@ -82,9 +84,9 @@ class RegisterController extends Controller
         // createUniqueNumberForVerifyWithPartner($length = 6, $email = null);
         // insertToDatabase($email, $password);
 
-        $verifyNumber = $this->createUniqueNumberForVerifyWithPartner( 6, $request->email, $request->password);
-        $response['verify_number'] = $verifyNumber;
-        // $response['data'] = $data;
+        $return = $this->createUniqueNumberForVerifyWithPartner( 6, $request->email, $request->password);
+        $response['login_id'] = $return['login_id'];
+        $response['verify_number'] = $return['random_number'];
         return response()->json($response, 200);
     }
 
@@ -96,27 +98,32 @@ class RegisterController extends Controller
 
         */
         
+        
         $selfLoginId = $request->login_id;
         $partnerVerifyNumber = str_replace(" ","",$request->verify_number);
 
-        $partnerLogin = Login::where('verify_number', $verifyNumber)->get()->first();
+        $partnerLogin = Login::where('verify_number', $partnerVerifyNumber)->get()->first();
         $selfLogin = Login::find($selfLoginId);
 
         if($partnerLogin == null || $selfLogin == null){
-            return response()->json(['msg' => 'No user found']);
+            return response()->json(['msg' => 'Wrong code'], 300);
         }
 
         if($partnerLogin->partner_id != null){
-            return response()->json(['msg'=> 'Your partner already has another partner']);
+            return response()->json(['msg'=> 'Your partner already has another partner'], 300);
         }
 
         if($selfLogin->partner_id != null){
-            return response()->json(['msg'=> 'You already has a partner']);
+            return response()->json(['msg'=> 'You already have a partner'], 300);
+        }
+
+        if($selfLogin->verify_number == $partnerLogin->verify_number){
+            return response()->json(['msg'=>"Cannot connect with yourself"], 300);
         }
 
         // this data will send back to the user
         $dataSelf = [
-            'type' => 'verify',
+            'type' => $this->INVITATION_TYPE,
             'data' => [
                 'partner_id' => $partnerLogin->id
             ],
@@ -125,15 +132,15 @@ class RegisterController extends Controller
 
         // this data will send to his/her partner with the id of the user that enter the verify number on the device
         $dataPartner = [
-            'type' => 'verify',
+            'type' => $this->INVITATION_TYPE,
             'data' => [
                 'partner_id' => $selfLogin->id
             ],
             'msg' => 'You have been connected'
         ];
 
-        $this->sendViaOneSignal($selfLogin->verifyNumber, $dataSelf = null, $msg = null);
-        $this->sendViaOneSignal($partnerLogin->verifyNumber, $dataPartner = null, $msg = null);
+        $this->sendViaOneSignal($tag = $selfLogin->verify_number,$dataToSend = $dataSelf , $msg = null);
+        $this->sendViaOneSignal($tag = $partnerLogin->verify_number,$dataToSend = $dataPartner , $msg = null);
 
         return response()->json(['msg'=>'success']);
     }
@@ -162,11 +169,11 @@ class RegisterController extends Controller
 
     }
 
-    function sendViaOneSignal($tag, $dataToSend = null, $msg = null){
-    
+    function sendViaOneSignal($tag = null, $dataToSend = null, $msg = "Message"){
+        Log::info($tag);
         OneSignal::sendNotificationUsingTags(
-            $msg,
-            array(["field"=>"tag","key" => "verify_number", "relation" => "=", "value" => $tag]),
+            "Message",
+            array(["field"=>"tag","key" => $this->VERIFY_PARTNER_TOKEN, "relation" => "=", "value" => $tag]),
             $url = null,
             $data = $dataToSend,
             $buttons = null,
@@ -199,7 +206,11 @@ class RegisterController extends Controller
             'password' => bcrypt($passowrd),
             'verify_number' => $randomNumber
         ]);
+        $return = [
+            'random_number' => $randomNumber,
+            'login_id' => $newLogin->id
+        ];
 
-        return $randomNumber;
+        return $return;
     }
 }

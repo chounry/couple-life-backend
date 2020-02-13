@@ -8,7 +8,7 @@ return array(
 	|
 	|
 	*/
-    'app_id' => '3979bd7e-d61f-4d42-8c2b-f479796a148d',
+    'app_id' => 'e014d11f-02c0-49f6-b0fd-bb6a50ef9496',
 
     /*
 	|--------------------------------------------------------------------------
@@ -18,6 +18,6 @@ return array(
     |
 	|
 	*/
-    'rest_api_key' => 'OGI1NTkwZmUtM2NkOC00Yzk3LThlNDEtYTQwZDQ1OWQ4NjVl',
+    'rest_api_key' => 'ZDA1ZmJkMTEtMGViZS00MTc3LWI2MTAtNWViMTQxNWY0M2I4',
     'user_auth_key' => 'YOUR-USER-AUTH-KEY'
 );
