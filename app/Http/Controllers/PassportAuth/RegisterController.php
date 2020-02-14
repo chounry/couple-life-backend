@@ -55,7 +55,8 @@ class RegisterController extends Controller
             return [
                 'login_id'=>Auth::id(),
                 'verify_number' => Auth::user()->verify_number,
-                'token'=>$token
+                'token'=>$token,
+                'user' => Auth::user()->user()->first()
             ];
         } 
         else {
@@ -147,9 +148,11 @@ class RegisterController extends Controller
 
     public function confirm(Request $request){
 
-        $login = Login::find($request->id);
-        if($login == null){
-            return \response()->json(['msg' => "User doesn't exist"]);
+        $login = Login::find($request->login_id);
+        $partnerLogin = Login::find($request->partner_login_id);
+
+        if($login == null || $partnerLogin == null){
+            return \response()->json(['msg' => "User doesn't exist"], 300);
         }
 
         $login->partner_id = $partnerLogin->id;
@@ -162,10 +165,14 @@ class RegisterController extends Controller
                 Then we can set them to the setup info step directly
 
          */
-        $login->verifyNumber = null;
+        $login->verify_number = null;
         $login->save();
+        $user = $login->user()->first();
+        $response = [
+            'user' => $user,
+        ];
 
-        return \response()->json('success', 200);
+        return \response()->json($response);
 
     }
 
