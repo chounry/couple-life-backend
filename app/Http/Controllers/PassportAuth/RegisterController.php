@@ -86,8 +86,13 @@ class RegisterController extends Controller
         // insertToDatabase($email, $password);
 
         $return = $this->createUniqueNumberForVerifyWithPartner( 6, $request->email, $request->password);
-        $response['login_id'] = $return['login_id'];
+
+        $createdLogin = $return['login'];
+        $accessToken = $createdLogin->createToken('Myapp')->accessToken;
+
+        $response['login_id'] = $return['login']->id;
         $response['verify_number'] = $return['random_number'];
+        $response['access_token'] = $accessToken;
         return response()->json($response, 200);
     }
 
@@ -176,6 +181,14 @@ class RegisterController extends Controller
 
     }
 
+    // function setupInfo(Request $request){
+    //     $user = User::create([
+    //         'first_name' => $request->first_name,
+    //         'last_name' => $request->last_name,
+    //         ''
+    //     ]);
+    // }
+
     function sendViaOneSignal($tag = null, $dataToSend = null, $msg = "Message"){
         Log::info($tag);
         OneSignal::sendNotificationUsingTags(
@@ -215,7 +228,7 @@ class RegisterController extends Controller
         ]);
         $return = [
             'random_number' => $randomNumber,
-            'login_id' => $newLogin->id
+            'login' => $newLogin
         ];
 
         return $return;
