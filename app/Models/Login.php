@@ -17,4 +17,8 @@ class Login extends Authenticatable
     public function user(){
         return $this->hasOne('App\User', 'login_id');
     }
+
+    public function partner(){
+        return $this->hasOne('App\Models\Login','partner_id');
+    }
 }

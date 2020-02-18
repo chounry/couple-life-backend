@@ -68,8 +68,16 @@ class RegisterController extends Controller
 
 
         if (auth()->attempt(['email' => $request->email, 'password' => $request->password])){ 
-            $user = Auth::user();
-            $token = $user->createToken('Myapp')->accessToken;
+            $login = Auth::user();
+            $token = $login->createToken('Myapp')->accessToken;
+            // check If Other User already Connected to this user 
+            // this check in case that his/her partner delete the app before confirm the code
+            $partnerLogin = Login::where('partner_id', $login->id)->first();
+            if($partnerLogin != null){
+                $login->verify_number = null;
+                $login->partner_id = $partnerLogin->id;
+                $login->save();
+            }
             return [
                 'login_id'=>Auth::id(),
                 'verify_number' => Auth::user()->verify_number,
