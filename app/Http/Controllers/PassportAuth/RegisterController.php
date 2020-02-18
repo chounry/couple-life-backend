@@ -9,10 +9,12 @@ use Auth;
 
 use OneSignal;
 use Validator;
-use User;
 
 // model
 use App\Models\Login;
+use App\Models\UserType;
+use App\User;
+
 
 class RegisterController extends Controller
 {
@@ -28,6 +30,22 @@ class RegisterController extends Controller
                 'msg' : '' 
             }
     */
+
+    public function getUser(){
+        $login = Auth::user();
+        $loginResponse = [
+            'id' => $login->id,
+            'email' => $login->email,
+            'login' => $login->verify_number,
+            'partner_id' => $login->partner_id
+        ];
+        $user = $login->user()->first();
+        $response = [
+            "login" => $loginResponse,
+            "user" => $user
+        ];
+        return response()->json($response);
+    }
 
     public function login(Request $request){
         $validator = Validator::make($request->all(), [
@@ -181,13 +199,22 @@ class RegisterController extends Controller
 
     }
 
-    // function setupInfo(Request $request){
-    //     $user = User::create([
-    //         'first_name' => $request->first_name,
-    //         'last_name' => $request->last_name,
-    //         ''
-    //     ]);
-    // }
+    function setupInfo(Request $request){
+
+        $login = Auth::user();
+        $userTypeId = UserType::where('name','Member')->first()->id;
+        Log::info($login);
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'dob' => $request->dob,
+            'gender' => $request->gender,
+            'user_type_id' => $userTypeId,
+            'login_id' => $login->id
+        ]);
+
+        return response()->json(['user'=> $user,'login' => $login]);
+    }
 
     function sendViaOneSignal($tag = null, $dataToSend = null, $msg = "Message"){
         Log::info($tag);

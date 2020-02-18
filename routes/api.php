@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->group(function () {
     // routes that need authentication
+    Route::post('/user/setup_info', 'PassportAuth\RegisterController@setupInfo');
+    Route::get('/user/get_user','PassportAuth\RegisterController@getUser');
     
 });
 

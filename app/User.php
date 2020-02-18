@@ -18,7 +18,7 @@ class User extends Model
      * @var array
      */
     protected $fillable = [
-        'first_name','last_name','dob','profile_img','cover_img','gender'
+        'first_name','last_name','dob','profile_img','cover_img','gender','user_type_id','login_id'
     ];
 
     public function userType(){
