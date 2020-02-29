@@ -200,6 +200,7 @@ class RegisterController extends Controller
         $login->save();
         $user = $login->user()->first();
         $response = [
+            'login' => $login,
             'user' => $user,
         ];
 
@@ -225,7 +226,7 @@ class RegisterController extends Controller
     }
 
     function sendViaOneSignal($tag = null, $dataToSend = null, $msg = "Message"){
-        Log::info($tag);
+
         OneSignal::sendNotificationUsingTags(
             "Message",
             array(["field"=>"tag","key" => $this->VERIFY_PARTNER_TOKEN, "relation" => "=", "value" => $tag]),

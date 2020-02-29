@@ -16,4 +16,4 @@ Route::get('/', function () {
 });
 
 
-Route::get('/test', 'TestController@test'); // TODO : delete. I used to test one signal
+// Route::get('/test', 'TestController@test'); // TODO : delete. I used to test one signal

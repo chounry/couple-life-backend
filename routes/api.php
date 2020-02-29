@@ -29,3 +29,7 @@ Route::post('/add_event', 'EventController@Create');
 Route::post('/update_event', 'EventController@Update');
 Route::post('/delete_event', 'EventController@Delete');
 Route::post('/read_event', 'EventController@Read');
+
+// Testing
+Route::resource('test','TestController');
+Route::resource('test2','Test2Controller');
